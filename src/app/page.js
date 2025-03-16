@@ -1,18 +1,19 @@
-import Navbar from "@/components/Navbar";
+import CotizarButton from "@/components/CotizarButton";
 import Servicios from "@/components/Servicios";
 
 export default function Home() {
   return (
-    <main className="flex flex-col h-screen">
-      {/* Navbar */}
-      <Navbar />
-
-      {/* Contenido principal que empuja el footer hacia abajo */}
-      <section className="flex flex-col items-center justify-center flex-grow bg-white">
-        <Servicios />
-      </section>
+    <main className="flex flex-col items-center pt-15 pb-20 px-5">
+      {/* Botón Cotizar en la esquina superior derecha */}
+      <CotizarButton />
+      <Servicios />
     </main>
   );
 }
+
+
+
+
+
 
 
