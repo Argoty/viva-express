@@ -6,20 +6,24 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { FiDollarSign, FiTrendingUp } from "react-icons/fi";
 import { Combobox } from "@/components/ui/combobox";
-import { toast } from "sonner";
 
 const destinos = [
   { label: "Bogotá", value: "bogota" },
-  { label: "Quindío", value: "quindio" },
+  { label: "Todo Quindío | Caicedonia y Sevilla", value: "quindio" },
 ];
 
 export default function CotizarButton() {
   const [open, setOpen] = useState(false);
   const [kg, setKg] = useState("1");
-  const [destino, setDestino] = useState(destinos[0].value);
-  const [precioEstimado, setPrecioEstimado] = useState(null);
+  const [destino, setDestino] = useState("");
   const [valorComercial, setValorComercial] = useState("");
+  const [precioEstimado, setPrecioEstimado] = useState(null);
 
+  // Mensajes de error
+  const [errorDestino, setErrorDestino] = useState("");
+  const [errorValor, setErrorValor] = useState("");
+
+  // Obtener el valor minimo comercial segun kilos
   const getMinimoValorComercial = (kg) => {
     const kgInt = parseInt(kg);
     if (kgInt >= 1 && kgInt <= 3) return 25000;
@@ -27,6 +31,7 @@ export default function CotizarButton() {
     return 0;
   };
 
+  // Manejar el input de los kilos que solo permita 1-5 kg
   const handleKgChange = (e) => {
     let value = e.target.value;
     if (value === "") {
@@ -38,25 +43,43 @@ export default function CotizarButton() {
       numericValue = "";
     }
     setKg(numericValue.toString());
+    if (errorValor!="") setErrorValor("");
   };
 
+  // Calcula el precio
   const calcularValores = () => {
     const kgValue = parseInt(kg);
     const minimo = getMinimoValorComercial(kgValue);
 
-    if (parseInt(valorComercial) < minimo) {
-      toast.error(`El valor comercial mínimo es de $${new Intl.NumberFormat("es-CO").format(minimo)}`);
+    // Resetear errores
+    setErrorDestino("");
+    setErrorValor("");
+
+    let valido = true;
+
+    // Valida si destino existe
+    if (!destino) {
+      setErrorDestino("Debe seleccionar un destino.");
+      valido = false;
+    }
+     // Valida que valor comercial sea mayor que el minimo
+    if (valorComercial === "" || parseInt(valorComercial) < minimo) {
+      setErrorValor(`El valor debe ser mínimo $${new Intl.NumberFormat("es-CO").format(minimo)}.`);
+      valido = false;
+    }
+
+    if (!valido) {
       setPrecioEstimado(null);
       return;
     }
 
+    // Calcula el precio total
     const precioPorKg = destino === "bogota" ? 12000 : 9000;
     const precioBase = kgValue * precioPorKg;
     const porcentaje = parseInt(valorComercial) * 0.02;
     const precioTotal = precioBase + porcentaje;
 
     setPrecioEstimado(precioTotal);
-    toast.success("Cotización generada correctamente");
   };
 
   return (
@@ -90,9 +113,9 @@ export default function CotizarButton() {
               <Input
                 type="number"
                 value={valorComercial}
-                onChange={(e) => setValorComercial(e.target.value)}
-                min={getMinimoValorComercial(kg)}
+                onChange={(e) => {setValorComercial(e.target.value); setErrorValor('')}}
               />
+              {errorValor && <p className="text-sm text-red-600 mt-1">{errorValor}</p>}
             </div>
 
             <div>
@@ -100,11 +123,16 @@ export default function CotizarButton() {
               <Combobox
                 items={destinos}
                 value={destino}
-                setValue={setDestino}
+                setValue={(val) => {
+                  setDestino(val);
+                  if (val && errorDestino!="") setErrorDestino("");
+                }}
                 placeholder="Seleccione un destino"
                 searchPlaceholder="Buscar destino..."
                 emptyMessage="No se encontró destino."
+                setError={setErrorDestino}
               />
+              {errorDestino && <p className="text-sm text-red-600 mt-1">{errorDestino}</p>}
             </div>
 
             <Button onClick={calcularValores} className="flex items-center gap-2">
@@ -123,4 +151,3 @@ export default function CotizarButton() {
     </div>
   );
 }
-
