@@ -20,6 +20,7 @@ export default function CotizarButton() {
   const [precioEstimado, setPrecioEstimado] = useState(null);
 
   // Mensajes de error
+  const [errorKg, setErrorKg] = useState("");
   const [errorDestino, setErrorDestino] = useState("");
   const [errorValor, setErrorValor] = useState("");
 
@@ -43,6 +44,7 @@ export default function CotizarButton() {
       numericValue = "";
     }
     setKg(numericValue.toString());
+    if (errorKg!="") setErrorKg("");
     if (errorValor!="") setErrorValor("");
   };
 
@@ -50,13 +52,12 @@ export default function CotizarButton() {
   const calcularValores = () => {
     const kgValue = parseInt(kg);
     const minimo = getMinimoValorComercial(kgValue);
-
-    // Resetear errores
-    setErrorDestino("");
-    setErrorValor("");
-
     let valido = true;
 
+    if (kg === "") {
+      setErrorKg("Debe digitar una cantidad");
+      valido = false;
+    }
     // Valida si destino existe
     if (!destino) {
       setErrorDestino("Debe seleccionar un destino.");
@@ -103,7 +104,9 @@ export default function CotizarButton() {
                 onChange={handleKgChange}
                 min="1"
                 max="5"
+                
               />
+              {errorKg && <p className="text-sm text-red-600 mt-1">{errorKg}</p>}
             </div>
 
             <div>
