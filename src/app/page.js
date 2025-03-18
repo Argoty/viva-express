@@ -3,10 +3,11 @@ import Servicios from "@/components/Servicios";
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center pt-15 pb-20 px-5">
+    <main className="flex flex-col pt-15 pb-20 px-5">
       {/* Botón Cotizar en la esquina superior derecha */}
-      <CotizarButton />
+       <CotizarButton />
       <Servicios />
+      
     </main>
   );
 }
