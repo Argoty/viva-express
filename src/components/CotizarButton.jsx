@@ -6,6 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { FiDollarSign, FiTrendingUp } from "react-icons/fi";
 import { Combobox } from "@/components/ui/Combobox";
+import {NumericFormat} from 'react-number-format';
+
 
 //ciudad: 1kg, 2kg, 3kg, 4kg, 5kg, 6-30kg
 const tarifas = {
@@ -35,7 +37,7 @@ export default function CotizarButton() {
   const [open, setOpen] = useState(false);
   const [kg, setKg] = useState("1");
   const [destino, setDestino] = useState("bogota");
-  const [valorComercial, setValorComercial] = useState("25000");
+  const [valorComercial, setValorComercial] = useState("$25.000");
   const [precioEstimado, setPrecioEstimado] = useState(null);
 
   const [errorKg, setErrorKg] = useState("");
@@ -118,7 +120,7 @@ export default function CotizarButton() {
             <DialogTitle>Calcular Costo de Envío</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4">
-          <div>
+            <div>
               <label className="font-medium">Destino:</label>
               <Combobox
                 items={destinos}
@@ -148,13 +150,21 @@ export default function CotizarButton() {
 
             <div>
               <label className="font-medium">
-                Valor Comercial (mínimo ${new Intl.NumberFormat("es-CO").format(getMinimoValorComercial(kg))}):
+                Valor Comercial:
               </label>
-              <Input
-                type="number"
+              <NumericFormat
+                thousandSeparator="."
+                decimalSeparator=","
+                prefix="$"
                 value={valorComercial}
-                onChange={(e) => { setValorComercial(e.target.value); setErrorValor('') }}
+                onValueChange={(values) => {
+                  const { value } = values; // value es el número sin formato
+                  setValorComercial(value);
+                  setErrorValor('');
+                }}
+                customInput={Input}
               />
+
               {errorValor && <p className="text-sm text-red-600 mt-1">{errorValor}</p>}
             </div>
 
