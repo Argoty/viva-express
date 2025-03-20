@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { FiDollarSign, FiTrendingUp } from "react-icons/fi";
-import { Combobox } from "@/components/ui/combobox";
+import { Combobox } from "@/components/ui/Combobox";
 
 //ciudad: 1kg, 2kg, 3kg, 4kg, 5kg, 6-30kg
 const tarifas = {
