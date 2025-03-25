@@ -37,7 +37,7 @@ export default function CotizarButton() {
   const [open, setOpen] = useState(false);
   const [kg, setKg] = useState("1");
   const [destino, setDestino] = useState("bogota");
-  const [valorComercial, setValorComercial] = useState("$25.000");
+  const [valorComercial, setValorComercial] = useState("25000");
   const [precioEstimado, setPrecioEstimado] = useState(null);
 
   const [errorKg, setErrorKg] = useState("");
